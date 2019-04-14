@@ -24,16 +24,17 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
 
     Button btnGPS;
     TextView txtUbicacion;
+     String id="";
 
     //hacer referencia a la base de datos de firebase
     DatabaseReference mydatabasereference = FirebaseDatabase.getInstance().getReference();
-
 
 
     @Override
@@ -45,120 +46,76 @@ public class MainActivity extends AppCompatActivity {
         txtUbicacion = (TextView) findViewById(R.id.gps);
 
 
+        crearCoordenada();
+        permisosDeGPS();
+    }
 
 
 
-            // se crea la coordenada en el firebase como prueba
-
-       /* int idTrasporte = 101;
-        double latitud = 00000;
-        double longitud = 00000;
-        Map<String, Object> datosCoordeanda = new HashMap<>();
-        datosCoordeanda.put("idTrasporte",idTrasporte);
-        datosCoordeanda.put("latitud",latitud);
-        datosCoordeanda.put("longitud",longitud);
-        mydatabasereference.child("coordenada").push().setValue(datosCoordeanda); */
 
 
 
+    public  void crearCoordenada(){
+        // crear objeto coordeanada en firebase
+        coordenada c = new coordenada();
+        c.setIdTrasporte(UUID.randomUUID().toString());
+        c.setLongitud(0);
+        c.setLatitud(0);
+        mydatabasereference.child("coordenada").child(c.getIdTrasporte()).setValue(c);
+
+        //extrae la id
+        id = c.getIdTrasporte();
+    }
+
+
+
+    public void permisosDeGPS(){
 
         int permissionCheck = ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
-
-
         //pregunta si no tiene permiso
         if (permissionCheck == PackageManager.PERMISSION_DENIED) {
             //de ser asi pregunta
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-
             } else {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         1);
             }
-
-
         }
-
-
     }
+
+
 
     public void verGPS(View view) {
 
-
         LocationManager locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
-
-
-
-
         LocationListener locationListener = new LocationListener() {
-
             //cuando cambia la posicion del gps los actualiza
             public void onLocationChanged(Location location) {
+
                 txtUbicacion.setText("" + location.getLatitude() + "," + location.getLongitude());
 
-                    //se extraen los datos
-                 final int idTrasporte = 101;
-                final double latitud = location.getLatitude();
-                final double longitud = location.getLongitude();
-
-
-
-
-                // se busca cada coordenada de trasporte(push) y actualiza los datos
-                mydatabasereference.child("coordenada").addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                            //octener los datos de cada push de la base de datos
-                        for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-
-                           coordenada coor = snapshot.getValue(coordenada.class);
-                           int idTrasporteBD = coor.getIdTrasporte();
-
-
-                            Log.e("idTrasporte: "," "+idTrasporteBD);
-
-                            if (idTrasporteBD==idTrasporte){
-
-                                    coordenada cord = new coordenada();
-
-                                    cord.setIdTrasporte(idTrasporte);
-                                    cord.setLatitud(latitud);
-                                    cord.setLongitud(longitud);
-
-                                    mydatabasereference.child("coordenada").child(snapshot.getKey()).setValue(cord);
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+                coordenada c = new coordenada();
+                //se extraen los datos
+                c.setIdTrasporte(id);
+                c.setLatitud(location.getLatitude());
+                c.setLongitud(location.getLongitude());
+            mydatabasereference.child("coordenada").child(id).setValue(c);
 
             }
 
             //cuando cambie el estatus
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
+            public void onStatusChanged(String provider, int status, Bundle extras) { }
             //cuando el proovedor este abilitado
-            public void onProviderEnabled(String provider) {
-            }
-
+            public void onProviderEnabled(String provider) { }
             //cuado el proovedor este desabilitado
-            public void onProviderDisabled(String provider) {
-            }
+            public void onProviderDisabled(String provider) { }
         };
-
 
         int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
-
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
     }
 }

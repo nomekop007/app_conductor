@@ -2,7 +2,7 @@ package com.example.app_conductor;
 
 public class coordenada {
 
-    private  int idTrasporte ;
+    private  String idTrasporte ;
     private double longitud;
     private  double latitud;
 
@@ -11,11 +11,11 @@ public class coordenada {
 
     }
 
-    public int getIdTrasporte() {
+    public String getIdTrasporte() {
         return idTrasporte;
     }
 
-    public void setIdTrasporte(int idTrasporte) {
+    public void setIdTrasporte(String idTrasporte) {
         this.idTrasporte = idTrasporte;
     }
 
