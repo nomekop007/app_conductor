@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "598050984426",
+    "firebase_url": "https://trasport-talca.firebaseio.com",
+    "project_id": "trasport-talca",
+    "storage_bucket": "trasport-talca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598050984426:android:bf0a9db557634adc",
+        "android_client_info": {
+          "package_name": "com.example.app_conductor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598050984426-p06mq2cjs443mo4humbbo3go6qft7mr7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzA3wwfbkKY3PYNLBnoic4IbFWiTb-HeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598050984426-p06mq2cjs443mo4humbbo3go6qft7mr7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
