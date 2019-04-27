@@ -1,4 +1,4 @@
-package com.example.app_conductor;
+package com.example.app_conductor.model;
 
 public class coordenada {
 

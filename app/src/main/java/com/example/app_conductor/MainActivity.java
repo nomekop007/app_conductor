@@ -2,28 +2,23 @@ package com.example.app_conductor;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.example.app_conductor.model.coordenada;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         txtUbicacion = (TextView) findViewById(R.id.gps);
 
 
-        crearCoordenada();
+       /* crearCoordenada();*/
         permisosDeGPS();
     }
 
@@ -88,23 +83,36 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+    private static final long MIN_TIEMPO_ENTRE_UPDATES = 0;
+    private static final float MIN_CAMBIO_DISTANCIA_PARA_UPDATES = 0;
     public void verGPS(View view) {
 
         LocationManager locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
+
         LocationListener locationListener = new LocationListener() {
             //cuando cambia la posicion del gps los actualiza
+
             public void onLocationChanged(Location location) {
 
                 txtUbicacion.setText("" + location.getLatitude() + "," + location.getLongitude());
 
                 coordenada c = new coordenada();
                 //se extraen los datos
-                c.setIdTrasporte(id);
+
+                Intent i = getIntent();
+                String idTrasporte = i.getStringExtra("idTrasporte");
+
+                c.setIdTrasporte(idTrasporte);
                 c.setLatitud(location.getLatitude());
                 c.setLongitud(location.getLongitude());
-            mydatabasereference.child("coordenada").child(id).setValue(c);
+            mydatabasereference.child("coordenada").child(idTrasporte).setValue(c);
+
+
+
 
             }
+
 
             //cuando cambie el estatus
             public void onStatusChanged(String provider, int status, Bundle extras) { }
@@ -112,10 +120,15 @@ public class MainActivity extends AppCompatActivity {
             public void onProviderEnabled(String provider) { }
             //cuado el proovedor este desabilitado
             public void onProviderDisabled(String provider) { }
+
         };
 
         int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIEMPO_ENTRE_UPDATES, MIN_CAMBIO_DISTANCIA_PARA_UPDATES, locationListener);
+
+
+
     }
 }
