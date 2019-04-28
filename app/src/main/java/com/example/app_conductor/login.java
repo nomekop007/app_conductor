@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.app_conductor.model.Trasporte;
 import com.google.firebase.database.DataSnapshot;
@@ -38,6 +39,7 @@ public class login extends AppCompatActivity {
         t_usuario = findViewById(R.id.txt_usuario);
         t_pass = findViewById(R.id.txt_pass);
 
+        crearLista();
     }
 
 
@@ -49,28 +51,44 @@ public class login extends AppCompatActivity {
             String pass = t_pass.getText().toString();
 
             if (usuario.isEmpty()){
-
                 t_usuario.setError("Campo Vacio");
                 t_usuario.requestFocus();
-
 
             }else if(pass.isEmpty()){
                     t_pass.setError("Campo Vacio");
                 t_pass.requestFocus();
-
             }else {
 
-           crearLista();
 
+
+                    //recorre la lista de trasporte buscando si el trasporte esta registrado
                 for (Trasporte t: trasporteList) {
                     if (usuario.equals(t.getUsuario()) && pass.equals(t.getContraseña())){
                         Intent intent = new Intent(login.this , MainActivity.class);
-                        //enviar los datos al activity usuario
+
+                        //enviar los datos al mainActivity
                         intent.putExtra("idTrasporte",t.getIdTrasporte());
+                        intent.putExtra("calificacion",t.getCalificacion());
+                        intent.putExtra("idLinea",t.getIdLinea());
+                        intent.putExtra("nombreConductor",t.getNombreConductor());
+                        intent.putExtra("patente",t.getPatente());
+
                         startActivity(intent);
+                        Toast.makeText(this, "sesion iniciada!", Toast.LENGTH_SHORT).show();
+                        limpiarCampos();
+                        return;
                     }
                 }
+
+                Toast.makeText(this, "usuario o contraseña incorrecto!", Toast.LENGTH_SHORT).show();
+                limpiarCampos();
             }
+    }
+
+
+    public void limpiarCampos(){
+        t_pass.setText("");
+
     }
 
 
@@ -80,11 +98,15 @@ public class login extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 trasporteList.clear();
+
+                //recorre la lista de los trasportes guardados en firebase
                 for (DataSnapshot obj : dataSnapshot.getChildren()) {
 
                     Log.e("obj  :",obj.toString());
+                    // tranforma el json trasporte de firebase en el objeto trasporte
                     Trasporte t = obj.getValue(Trasporte.class);
                     trasporteList.add(t);
+
                 }
 
             }
@@ -93,6 +115,8 @@ public class login extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
+
+
 
 
 

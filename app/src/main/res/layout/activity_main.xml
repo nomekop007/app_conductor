@@ -13,26 +13,46 @@
 
 
         <TextView
+            android:id="@+id/nombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="nombre"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            />
+
+        <TextView
             android:id="@+id/gps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ubicacion GPS"
+            android:textSize="20dp"
+            android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_marginBottom="20dp"
             />
 
-        <Button
-            android:id="@+id/boton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="activar GPS"
-            android:layout_below="@+id/gps"
-            android:layout_marginTop="20dp"
-            android:layout_centerHorizontal="true"
-            android:onClick="verGPS"
-            />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="70dp">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/boton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+            android:backgroundTint="@color/colorAzul"
+                android:onClick="verGPS"
+                android:src="@drawable/gps_on"
+                tools:srcCompat="@tools:sample/avatars" />
+
+        </RelativeLayout>
+
+
 
     </RelativeLayout>
+
 
 
 </android.support.constraint.ConstraintLayout>

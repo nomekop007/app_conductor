@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,8 +25,8 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
 
-    Button btnGPS;
-    TextView txtUbicacion;
+    FloatingActionButton btnGPS;
+    TextView txtUbicacion,txtnombre;
      String id="";
 
     //hacer referencia a la base de datos de firebase
@@ -37,12 +38,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnGPS = (Button) findViewById(R.id.boton);
+        btnGPS =  findViewById(R.id.boton);
         txtUbicacion = (TextView) findViewById(R.id.gps);
-
+        txtnombre = (TextView) findViewById(R.id.nombre);
 
        /* crearCoordenada();*/
         permisosDeGPS();
+
+
+        Intent i = getIntent();
+        String nombre = i.getStringExtra("nombreConductor");
+        txtnombre.setText(nombre);
     }
 
 
@@ -86,7 +92,11 @@ public class MainActivity extends AppCompatActivity {
 
     private static final long MIN_TIEMPO_ENTRE_UPDATES = 0;
     private static final float MIN_CAMBIO_DISTANCIA_PARA_UPDATES = 0;
+
+
     public void verGPS(View view) {
+
+
 
         LocationManager locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
