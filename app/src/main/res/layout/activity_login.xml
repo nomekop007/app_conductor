@@ -61,8 +61,10 @@
                 android:layout_below="@id/txt_pass"
                 android:layout_width="match_parent"
                 android:layout_margin="30dp"
+                android:background="@color/colorAzul"
                 android:layout_height="wrap_content"
                 android:text="ingresar"
+                android:textColor="@color/colorBlanco"
             android:onClick="iniciar"
                 android:layout_centerHorizontal="true"
                 />

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAzul">
+
+
+
+    <ImageView
+        android:layout_below="@id/toolbar"
+        android:id="@+id/circulo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/circulo"/>
+    <ImageView
+        android:layout_below="@id/toolbar"
+        android:id="@+id/imagenUser"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/user" />
+
+
+
+    <TextView
+        android:id="@+id/text_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/imagenUser"
+        android:layout_centerHorizontal="true"
+        android:text="nombre conductor"
+        android:textSize="25dp"
+        android:textColor="@color/colorBlanco"/>
+
+    <TextView
+        android:id="@+id/text_linea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_nombre"
+        android:layout_centerHorizontal="true"
+        android:text="Linea X"
+        android:textSize="15dp"
+        android:textColor="@color/colorBlanco"/>
+
+
+    <TextView
+        android:id="@+id/text_edad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_linea"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:text="Edad : "
+        android:textSize="16dp"
+        android:textColor="@color/colorBlanco"/>
+
+    <TextView
+        android:id="@+id/text_calificacion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_edad"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="Calificacion : "
+        android:textSize="16dp"
+        android:textColor="@color/colorBlanco"/>
+
+    <TextView
+        android:id="@+id/text_patente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_calificacion"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="Patente : "
+        android:textSize="16dp"
+        android:textColor="@color/colorBlanco"/>
+
+
+</RelativeLayout>

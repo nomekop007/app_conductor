@@ -72,7 +72,7 @@ public class login extends AppCompatActivity {
                         intent.putExtra("idLinea",t.getIdLinea());
                         intent.putExtra("nombreConductor",t.getNombreConductor());
                         intent.putExtra("patente",t.getPatente());
-
+                        intent.putExtra("estado",t.isEstado());
                         startActivity(intent);
                         Toast.makeText(this, "sesion iniciada!", Toast.LENGTH_SHORT).show();
                         limpiarCampos();
@@ -102,7 +102,7 @@ public class login extends AppCompatActivity {
                 //recorre la lista de los trasportes guardados en firebase
                 for (DataSnapshot obj : dataSnapshot.getChildren()) {
 
-                    Log.e("obj  :",obj.toString());
+                 //   Log.e("obj  :",obj.toString());
                     // tranforma el json trasporte de firebase en el objeto trasporte
                     Trasporte t = obj.getValue(Trasporte.class);
                     trasporteList.add(t);
