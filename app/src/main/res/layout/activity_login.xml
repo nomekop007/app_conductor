@@ -1,90 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAzul"
+    android:background="@mipmap/debianflowlogin"
     tools:context=".login">
 
 
-        <RelativeLayout
-            android:background="@color/colorBlanco"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginVertical="50dp"
+        android:background="@drawable/bordes">
+
+        <ImageView
+            android:id="@+id/circulo2"
+            android:layout_width="189dp"
+            android:layout_height="147dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/circulo2" />
+
+
+        <ImageView
+            android:id="@+id/img"
+            android:layout_width="100dp"
+            android:layout_height="150dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:src="@mipmap/fondo" />
+
+        <TextView
+            android:id="@+id/titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/img"
+            android:layout_centerHorizontal="true"
+            android:text="Trasport-Talca"
+            android:textSize="20dp" />
+
+
+        <EditText
+            android:id="@+id/txt_usuario"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="40dp"
-           >
-
-            <ImageView
-                android:id="@+id/img"
-                android:layout_width="189dp"
-                android:layout_height="147dp"
-                android:src="@drawable/ic_directions_bus_black_24dp"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp"/>
-
-            <TextView
-                android:id="@+id/titulo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Trasport-Talca"
-                android:textSize="20dp"
-                android:layout_below="@id/img"
-                android:layout_centerHorizontal="true"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titulo"
+            android:layout_margin="10dp"
+            android:hint="Usuario"
+            android:inputType="text" />
 
 
-            <EditText
-                android:id="@+id/txt_usuario"
-                android:layout_below="@id/titulo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Usuario"
-                android:layout_margin="30dp"
-                android:inputType="text"/>
+        <EditText
+            android:id="@+id/txt_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_usuario"
+            android:layout_margin="10dp"
+            android:hint="contraseña"
+            android:inputType="textPassword" />
 
 
-            <EditText
-                android:id="@+id/txt_pass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txt_usuario"
-                android:hint="contraseña"
-                android:layout_margin="30dp"
-                android:inputType="textPassword"/>
-
-
-
-            <Button
-                android:id="@+id/btn_ingresar"
-                android:layout_marginTop="10dp"
-                android:layout_below="@id/txt_pass"
-                android:layout_width="match_parent"
-                android:layout_margin="30dp"
-                android:background="@color/colorAzul"
-                android:layout_height="wrap_content"
-                android:text="ingresar"
-                android:textColor="@color/colorBlanco"
+        <Button
+            android:id="@+id/btn_ingresar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_pass"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorAzul"
             android:onClick="iniciar"
-                android:layout_centerHorizontal="true"
-                />
+            android:text="ingresar"
+            android:textColor="@color/colorBlanco" />
 
 
-
-           <TextView
-               android:layout_width="wrap_content"
-               android:layout_height="wrap_content"
-               android:text="version conductor"
-               android:textColor="@color/colorRojo"
-              android:layout_alignParentBottom="true"
-               android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-               />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:text="version conductor"
+            android:textColor="@color/colorRojo" />
 
 
-        </RelativeLayout>
-
-
+    </RelativeLayout>
 
 
 </android.support.constraint.ConstraintLayout>

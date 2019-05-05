@@ -37,8 +37,8 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
 
-    FloatingActionButton btnGPS;
-    TextView txtUbicacion, txtnombre;
+    Button btnGPS;
+    TextView txtUbicacion;
     String id = "";
     Trasporte perfil;
 
@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         btnGPS = findViewById(R.id.boton);
         txtUbicacion = (TextView) findViewById(R.id.gps);
-        txtnombre = (TextView) findViewById(R.id.nombre);
+        drawerLayout =  findViewById(R.id.drawer_layout);
+        toolbar =  findViewById(R.id.toolbar);
+        navigationView = findViewById(R.id.navigation);
+
 
 
         perfilTrasporte();
@@ -67,22 +71,27 @@ public class MainActivity extends AppCompatActivity {
         permisosDeGPS();
         // crearCoordenada();
 
-
-
     }
 
     public void perfilTrasporte(){
 
         //extraer lo del login
+        View header = ((NavigationView)findViewById(R.id.navigation)).getHeaderView(0);
         Intent i = getIntent();
-        id = i.getStringExtra("idTrasporte");
 
+        ((TextView) header.findViewById(R.id.text_nombre)).setText(i.getStringExtra("nombreConductor"));
+        ((TextView) header.findViewById(R.id.text_linea)).setText(i.getStringExtra("idLinea"));
+        ((TextView) header.findViewById(R.id.text_edad)).setText("Edad : "+i.getStringExtra("edad"));
+        ((TextView) header.findViewById(R.id.text_calificacion)).setText("Calificacion : "+i.getStringExtra("calificacion"));
+        ((TextView) header.findViewById(R.id.text_patente)).setText("Patente : "+i.getStringExtra("patente"));
+
+
+        id = i.getStringExtra("idTrasporte");
         mydatabasereference.child("trasporte").child(id).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 perfil = dataSnapshot.getValue(Trasporte.class);
-                txtnombre.setText(perfil.getNombreConductor());
             }
 
             @Override
@@ -92,15 +101,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-
-
     public void confDrawer(){
         //configuracion del comportamiento del drawer
 
-        drawerLayout =  findViewById(R.id.drawer_layout);
-        toolbar =  findViewById(R.id.toolbar);
-        navigationView = findViewById(R.id.navigation);
+
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -115,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
                        startActivity(intent);
                        break;
                }
-
-
                 return true;
             }
         });
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.openDrawer,R.string.closeDrawer);
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
+
 
 
     }
@@ -172,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     c.setLongitud(0);
                     txtUbicacion.setText("ubicacion Bloqueada");
                 }
+
                 //se actualiza la coordenada
                 mydatabasereference.child("coordenada").child(id).setValue(c);
 

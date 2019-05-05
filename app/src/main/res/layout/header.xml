@@ -5,7 +5,6 @@
     android:background="@color/colorAzul">
 
 
-
     <ImageView
         android:layout_below="@id/toolbar"
         android:id="@+id/circulo"
@@ -15,6 +14,9 @@
         android:layout_marginTop="50dp"
         android:layout_marginBottom="20dp"
         android:src="@drawable/circulo"/>
+
+
+
     <ImageView
         android:layout_below="@id/toolbar"
         android:id="@+id/imagenUser"
@@ -34,8 +36,9 @@
         android:layout_below="@id/imagenUser"
         android:layout_centerHorizontal="true"
         android:text="nombre conductor"
-        android:textSize="25dp"
-        android:textColor="@color/colorBlanco"/>
+        android:textSize="23dp"
+        android:textColor="@color/colorBlanco"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
         android:id="@+id/text_linea"

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.app_conductor.model.LineaTrasporte;
 import com.example.app_conductor.model.Trasporte;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -27,8 +28,7 @@ public class login extends AppCompatActivity {
     DatabaseReference mydatabasereference = FirebaseDatabase.getInstance().getReference();
 
     private List<Trasporte> trasporteList = new ArrayList<>();
-
-
+    private List<LineaTrasporte> lineaTrasporteList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,23 +60,30 @@ public class login extends AppCompatActivity {
             }else {
 
 
-
                     //recorre la lista de trasporte buscando si el trasporte esta registrado
                 for (Trasporte t: trasporteList) {
                     if (usuario.equals(t.getUsuario()) && pass.equals(t.getContraseña())){
-                        Intent intent = new Intent(login.this , MainActivity.class);
 
-                        //enviar los datos al mainActivity
-                        intent.putExtra("idTrasporte",t.getIdTrasporte());
-                        intent.putExtra("calificacion",t.getCalificacion());
-                        intent.putExtra("idLinea",t.getIdLinea());
-                        intent.putExtra("nombreConductor",t.getNombreConductor());
-                        intent.putExtra("patente",t.getPatente());
-                        intent.putExtra("estado",t.isEstado());
-                        startActivity(intent);
-                        Toast.makeText(this, "sesion iniciada!", Toast.LENGTH_SHORT).show();
-                        limpiarCampos();
-                        return;
+
+                        for (LineaTrasporte l: lineaTrasporteList){
+                          if (t.getIdLinea()==l.getIdLinea()){
+                              Intent intent = new Intent(login.this , MainActivity.class);
+
+
+                              //enviar los datos al mainActivity
+                              intent.putExtra("idTrasporte",t.getIdTrasporte()+"");
+                              intent.putExtra("calificacion",t.getCalificacion()+"");
+                              intent.putExtra("idLinea",l.getNombreLinea()+"");
+                              intent.putExtra("nombreConductor",t.getNombreConductor()+"");
+                              intent.putExtra("patente",t.getPatente()+"");
+                              intent.putExtra("edad",t.getEdadConductor()+"");
+                              startActivity(intent);
+                              Toast.makeText(this, "sesion iniciada!", Toast.LENGTH_SHORT).show();
+                              limpiarCampos();
+                              return;
+                          }
+                        }
+
                     }
                 }
 
@@ -93,6 +100,7 @@ public class login extends AppCompatActivity {
 
 
     public void crearLista(){
+
         mydatabasereference.child("trasporte").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -114,6 +122,36 @@ public class login extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
+
+        mydatabasereference.child("lineaTrasporte").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                lineaTrasporteList.clear();
+
+                //recorre la lista de los trasportes guardados en firebase
+                for (DataSnapshot obj : dataSnapshot.getChildren()) {
+
+                    //   Log.e("obj  :",obj.toString());
+                    // tranforma el json trasporte de firebase en el objeto trasporte
+                    LineaTrasporte t = obj.getValue(LineaTrasporte.class);
+                    lineaTrasporteList.add(t);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+
+
+
+
+
+
+
     }
 
 

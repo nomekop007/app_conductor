@@ -29,14 +29,6 @@
 
 
             <TextView
-                android:id="@+id/nombre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="50dp"
-                android:text="nombre" />
-
-            <TextView
                 android:id="@+id/gps"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -51,16 +43,28 @@
                 android:layout_height="match_parent"
                 android:layout_margin="70dp">
 
-                <android.support.design.widget.FloatingActionButton
+
+
+                <Button
                     android:id="@+id/boton"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="250dp"
+                    android:layout_height="220dp"
                     android:layout_centerInParent="true"
-                    android:backgroundTint="@color/colorAzul"
+                    android:background="@drawable/btn_cicle_opcion"
                     android:onClick="verGPS"
-                    android:src="@drawable/gps_on" />
+
+                    />
+
 
             </RelativeLayout>
+
+            <ImageView
+                android:layout_centerInParent="true"
+                android:layout_width="280dp"
+                android:layout_height="200dp"
+                android:src="@drawable/gps_on"
+                />
+
         </RelativeLayout>
 
     </LinearLayout>
