@@ -134,7 +134,13 @@ public class MainActivity extends AppCompatActivity {
                        Intent intent = new Intent(MainActivity.this , login.class);
 
                        //apaga el lister de gps
-                       locationManager.removeUpdates(locationListener);
+                       try {
+                           locationManager.removeUpdates(locationListener);
+                       }
+                       catch(Exception e) {
+                         Log.e("error : ","listener desactivado");
+                       }
+
 
                        //deja los valores en 0
                        coordenada c = new coordenada();
