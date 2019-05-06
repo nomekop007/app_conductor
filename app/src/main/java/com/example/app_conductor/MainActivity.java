@@ -24,6 +24,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.app_conductor.model.LineaTrasporte;
 import com.example.app_conductor.model.Trasporte;
 import com.example.app_conductor.model.coordenada;
 import com.google.firebase.database.DataSnapshot;
@@ -41,16 +42,21 @@ public class MainActivity extends AppCompatActivity {
     TextView txtUbicacion;
     String id = "";
     Trasporte perfil;
+    LineaTrasporte lineaTrasporte;
 
     //hacer referencia a la base de datos de firebase
     DatabaseReference mydatabasereference = FirebaseDatabase.getInstance().getReference();
 
+    //escuchadores de gps
+    LocationManager locationManager;
+    LocationListener locationListener;
 
-    //declarar elemento de drawer
+    //declarar elementos de drawer
     private DrawerLayout drawerLayout;
     private android.support.v7.widget.Toolbar toolbar;
     private ActionBarDrawerToggle toggle;
     private NavigationView navigationView;
+    private View header;
 
 
     @Override
@@ -63,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout =  findViewById(R.id.drawer_layout);
         toolbar =  findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation);
-
+        header = ((NavigationView)findViewById(R.id.navigation)).getHeaderView(0);
 
 
         perfilTrasporte();
@@ -75,16 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void perfilTrasporte(){
 
-        //extraer lo del login
-        View header = ((NavigationView)findViewById(R.id.navigation)).getHeaderView(0);
+        //extraer la id del login
         Intent i = getIntent();
-
-        ((TextView) header.findViewById(R.id.text_nombre)).setText(i.getStringExtra("nombreConductor"));
-        ((TextView) header.findViewById(R.id.text_linea)).setText(i.getStringExtra("idLinea"));
-        ((TextView) header.findViewById(R.id.text_edad)).setText("Edad : "+i.getStringExtra("edad"));
-        ((TextView) header.findViewById(R.id.text_calificacion)).setText("Calificacion : "+i.getStringExtra("calificacion"));
-        ((TextView) header.findViewById(R.id.text_patente)).setText("Patente : "+i.getStringExtra("patente"));
-
 
         id = i.getStringExtra("idTrasporte");
         mydatabasereference.child("trasporte").child(id).addValueEventListener(new ValueEventListener() {
@@ -92,6 +90,14 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 perfil = dataSnapshot.getValue(Trasporte.class);
+
+                //mostrar los datos del perfil en el header del drawer
+
+                ((TextView) header.findViewById(R.id.text_nombre)).setText(""+perfil.getNombreConductor());
+                buscarLinea(perfil.getIdLinea()+""); //es foranea por eso se busca a parte
+                ((TextView) header.findViewById(R.id.text_edad)).setText("Edad : "+perfil.getEdadConductor());
+                ((TextView) header.findViewById(R.id.text_calificacion)).setText("Calificacion : "+perfil.getCalificacion());
+                ((TextView) header.findViewById(R.id.text_patente)).setText("Patente : "+perfil.getPatente());
             }
 
             @Override
@@ -101,11 +107,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void buscarLinea(String idLinea){
+        mydatabasereference.child("lineaTrasporte").child(idLinea).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    lineaTrasporte = dataSnapshot.getValue(LineaTrasporte.class);
+                ((TextView) header.findViewById(R.id.text_linea)).setText(""+lineaTrasporte.getNombreLinea());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
+        });
+    }
+
     public void confDrawer(){
+
         //configuracion del comportamiento del drawer
-
-
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -113,10 +130,20 @@ public class MainActivity extends AppCompatActivity {
                switch (menuItem.getItemId()){
                    case R.id.cerrar:
                        Toast.makeText(MainActivity.this, "sesion cerrada!", Toast.LENGTH_SHORT).show();
-                       finish();
+
                        Intent intent = new Intent(MainActivity.this , login.class);
 
+                       //apaga el lister de gps
+                       locationManager.removeUpdates(locationListener);
+
+                       //deja los valores en 0
+                       coordenada c = new coordenada();
+                       c.setIdTrasporte(id);
+                       c.setLatitud(0);
+                       c.setLongitud(0);
+                       mydatabasereference.child("coordenada").child(id).setValue(c);
                        startActivity(intent);
+                       finish();
                        break;
                }
                 return true;
@@ -154,9 +181,9 @@ public class MainActivity extends AppCompatActivity {
     public void verGPS(View view) {
 
 
-        LocationManager locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
+         locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
-        LocationListener locationListener = new LocationListener() {
+         locationListener = new LocationListener() {
             //cuando cambia la posicion del gps los actualiza
 
             public void onLocationChanged(Location location) {
@@ -164,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
                 coordenada c = new coordenada();
                 //se extraen los datos
                 c.setIdTrasporte(id);
-
 
                 if (perfil.isEstado()){
                 c.setLatitud(location.getLatitude());
@@ -199,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
         int permissionCheck = ContextCompat.checkSelfPermission(MainActivity.this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
+
 
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
