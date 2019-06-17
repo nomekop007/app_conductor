@@ -11,6 +11,7 @@ public class Trasporte {
     private String nombreConductor;
     private String patente;
     private String usuario;
+    private String fotoConductorUrl;
 
     public Trasporte() {
 
@@ -87,4 +88,13 @@ public class Trasporte {
     public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
+
+    public String getFotoConductorUrl() {
+        return fotoConductorUrl;
+    }
+
+    public void setFotoConductorUrl(String fotoConductorUrl) {
+        this.fotoConductorUrl = fotoConductorUrl;
+    }
+
 }

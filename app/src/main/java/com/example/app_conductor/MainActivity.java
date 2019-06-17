@@ -21,9 +21,12 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.app_conductor.model.LineaTrasporte;
 import com.example.app_conductor.model.Trasporte;
 import com.example.app_conductor.model.coordenada;
@@ -48,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference mydatabasereference = FirebaseDatabase.getInstance().getReference();
 
     //escuchadores de gps
-    LocationManager locationManager;
-    LocationListener locationListener;
+ private    LocationManager locationManager;
+  private   LocationListener locationListener;
 
     //declarar elementos de drawer
     private DrawerLayout drawerLayout;
@@ -98,6 +101,18 @@ public class MainActivity extends AppCompatActivity {
                 ((TextView) header.findViewById(R.id.text_edad)).setText("Edad : "+perfil.getEdadConductor());
                 ((TextView) header.findViewById(R.id.text_calificacion)).setText("Calificacion : "+perfil.getCalificacion());
                 ((TextView) header.findViewById(R.id.text_patente)).setText("Patente : "+perfil.getPatente());
+
+
+                Glide.with(getApplicationContext())
+                        .load(perfil.getFotoConductorUrl())
+                        .centerCrop()
+                        .circleCrop()
+                        .error(R.drawable.error)
+                        .placeholder(R.drawable.cargando)
+                        .thumbnail(0.5f)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into((ImageView) header.findViewById(R.id.imagenUser));
+
             }
 
             @Override
@@ -163,8 +178,6 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-
-
     }
 
     public void permisosDeGPS() {
@@ -189,11 +202,13 @@ public class MainActivity extends AppCompatActivity {
 
          locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
+
+
          locationListener = new LocationListener() {
+
             //cuando cambia la posicion del gps los actualiza
 
             public void onLocationChanged(Location location) {
-
                 coordenada c = new coordenada();
                 //se extraen los datos
                 c.setIdTrasporte(id);
@@ -233,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 0, locationListener);
 
 
     }
