@@ -43,7 +43,6 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
 
-    //esto es una prueba
 
     Button btnGPS ,btnGPS2;
 
