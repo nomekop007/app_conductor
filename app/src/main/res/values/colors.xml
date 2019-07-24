@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">#5060B9</color>
     <color name="colorPrimaryDark">#5060B9</color>
     <color name="colorAccent">#5060B9</color>
 
     <color name="colorBlanco">#FFFFFF</color>
     <color name="colorAzul">#5060B9</color>
-    <color name="colorplomo">#726A6D</color>
+    <color name="colorplomo">#BEBBBB</color>
     <color name="colorRojo">#E22214</color>
+    <color name="colorAzulsuave">#99AAE4</color>
 </resources>

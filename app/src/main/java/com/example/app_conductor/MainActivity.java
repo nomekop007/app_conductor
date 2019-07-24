@@ -3,6 +3,7 @@ package com.example.app_conductor;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -21,6 +22,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,8 +43,9 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
 
-    Button btnGPS;
-    TextView txtUbicacion;
+    Button btnGPS ,btnGPS2;
+
+    EditText txtUbicacion;
     String id = "";
     Trasporte perfil;
     LineaTrasporte lineaTrasporte;
@@ -64,21 +67,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         btnGPS = findViewById(R.id.boton);
-        txtUbicacion = (TextView) findViewById(R.id.gps);
+        btnGPS2 = findViewById(R.id.boton2);
+
+
+        txtUbicacion =  findViewById(R.id.gps);
         drawerLayout =  findViewById(R.id.drawer_layout);
         toolbar =  findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation);
         header = ((NavigationView)findViewById(R.id.navigation)).getHeaderView(0);
-
-
+        btnGPS2.setVisibility(View.INVISIBLE);
         perfilTrasporte();
         confDrawer();
         permisosDeGPS();
-        // crearCoordenada();
+
 
     }
 
@@ -171,8 +177,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        toolbar.setTitle("Home");
-
+        toolbar.setTitle("Ubicacion");
         setSupportActionBar(toolbar);
         toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.openDrawer,R.string.closeDrawer);
         drawerLayout.setDrawerListener(toggle);
@@ -197,12 +202,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void verGPS(View view) {
 
+
+    public void ActivarGPS(View view) {
 
          locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
-
-
 
          locationListener = new LocationListener() {
 
@@ -226,7 +230,8 @@ public class MainActivity extends AppCompatActivity {
                 //se actualiza la coordenada
                 mydatabasereference.child("coordenada").child(id).setValue(c);
 
-
+                btnGPS2.setVisibility(View.VISIBLE);
+                btnGPS.setVisibility(View.INVISIBLE);
             }
 
 
@@ -248,20 +253,34 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.ACCESS_FINE_LOCATION);
 
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000 * 20, 0, locationListener);
 
 
     }
 
-    public void crearCoordenada() {
-        // crear objeto coordeanada en firebase
-        coordenada c = new coordenada();
-        c.setIdTrasporte(UUID.randomUUID().toString());
-        c.setLongitud(0);
-        c.setLatitud(0);
-        mydatabasereference.child("coordenada").child(c.getIdTrasporte()).setValue(c);
+    public void ApagarGPS(View view) {
 
-        //extrae la id
-        id = c.getIdTrasporte();
+
+        //apaga el lister de gps
+        try {
+            locationManager.removeUpdates(locationListener);
+        }
+        catch(Exception e) {
+            Log.e("error : ","listener desactivado");
+        }
+        //deja los valores en 0
+        coordenada c = new coordenada();
+        c.setIdTrasporte(id);
+        c.setLatitud(0);
+        c.setLongitud(0);
+        mydatabasereference.child("coordenada").child(id).setValue(c);
+        btnGPS2.setVisibility(View.INVISIBLE);
+        btnGPS.setVisibility(View.VISIBLE);
+        txtUbicacion.setText("");
+    }
+
+    @Override
+    public void onBackPressed() {
+        drawerLayout.closeDrawers();
     }
 }

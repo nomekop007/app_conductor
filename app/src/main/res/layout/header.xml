@@ -35,7 +35,7 @@
         android:layout_below="@id/text_nombre"
         android:layout_centerHorizontal="true"
         android:text="Linea X"
-        android:textSize="15dp"
+        android:textSize="16dp"
         android:textColor="@color/colorBlanco"/>
 
 

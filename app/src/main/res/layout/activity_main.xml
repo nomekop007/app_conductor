@@ -8,7 +8,6 @@
     android:fitsSystemWindows="true">
 
 
-
     <!-- Layout to contain contents of main body of screen (drawer will slide over this) -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,62 +16,72 @@
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            android:background="@color/colorAzul"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark"
-            ></android.support.v7.widget.Toolbar>
+            android:background="@color/colorAzul"
+            android:theme="@style/Base.ThemeOverlay.AppCompat.Dark"></android.support.v7.widget.Toolbar>
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/colorAzulsuave">
 
-
-            <TextView
-                android:id="@+id/gps"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="20dp"
-                android:text="ubicacion GPS"
-                android:textSize="20dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="70dp">
 
-
-
                 <Button
                     android:id="@+id/boton"
                     android:layout_width="250dp"
                     android:layout_height="220dp"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/btn_cicle_opcion"
-                    android:onClick="verGPS"
+                    android:background="@drawable/circulo2"
+                    android:onClick="ActivarGPS"
+                    android:text="Iniciar"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlanco" />
 
-                    />
-
+                <Button
+                    android:id="@+id/boton2"
+                    android:layout_width="250dp"
+                    android:layout_height="220dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/circulo"
+                    android:onClick="ApagarGPS"
+                    android:text="Detener"
+                    android:textSize="16dp"
+                    android:textColor="@color/colorBlanco" />
 
             </RelativeLayout>
 
             <ImageView
-                android:layout_centerInParent="true"
                 android:layout_width="280dp"
                 android:layout_height="200dp"
-                android:src="@drawable/gps_on"
-                />
+                android:layout_centerInParent="true"
+                android:src="@drawable/gps_on" />
+
+
+
+            <EditText
+                android:id="@+id/gps"
+                android:enabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
+                android:background="@color/colorBlanco"
+                android:text=""
+                android:gravity="center"
+                android:textSize="20dp" />
+
 
         </RelativeLayout>
 
     </LinearLayout>
-
-
-
-
-
 
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
@@ -81,11 +90,12 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
         android:background="@color/colorAzul"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/header"
+        app:itemIconTint="@color/colorBlanco"
         app:itemTextColor="@color/colorBlanco"
-        app:menu="@menu/menu_drawer"
-        app:headerLayout="@layout/header"/>
+        app:menu="@menu/menu_drawer" />
 
 </android.support.v4.widget.DrawerLayout>
 
