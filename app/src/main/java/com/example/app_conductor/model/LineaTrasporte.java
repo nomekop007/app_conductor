@@ -2,12 +2,20 @@ package com.example.app_conductor.model;
 
 public class LineaTrasporte {
 
+    private String idLineaTrasporte;
     private String idAgencia;
-    private int idLinea;
     private String nombreLinea;
 
     public LineaTrasporte() {
 
+    }
+
+    public String getIdLineaTrasporte() {
+        return idLineaTrasporte;
+    }
+
+    public void setIdLineaTrasporte(String idLineaTrasporte) {
+        this.idLineaTrasporte = idLineaTrasporte;
     }
 
     public String getIdAgencia() {
@@ -16,14 +24,6 @@ public class LineaTrasporte {
 
     public void setIdAgencia(String idAgencia) {
         this.idAgencia = idAgencia;
-    }
-
-    public int getIdLinea() {
-        return idLinea;
-    }
-
-    public void setIdLinea(int idLinea) {
-        this.idLinea = idLinea;
     }
 
     public String getNombreLinea() {

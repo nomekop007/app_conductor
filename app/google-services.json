@@ -1,34 +1,42 @@
 {
   "project_info": {
-    "project_number": "598050984426",
-    "firebase_url": "https://trasport-talca.firebaseio.com",
-    "project_id": "trasport-talca",
-    "storage_bucket": "trasport-talca.appspot.com"
+    "project_number": "353201080906",
+    "firebase_url": "https://trasportracking.firebaseio.com",
+    "project_id": "trasportracking",
+    "storage_bucket": "trasportracking.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:598050984426:android:bf0a9db557634adc",
+        "mobilesdk_app_id": "1:353201080906:android:659cbb0fb931b9a6aaf4b3",
         "android_client_info": {
           "package_name": "com.example.app_conductor"
         }
       },
       "oauth_client": [
         {
-          "client_id": "598050984426-p06mq2cjs443mo4humbbo3go6qft7mr7.apps.googleusercontent.com",
+          "client_id": "353201080906-ccfsshk6khjbhq0pk6bnbfj3eul989ur.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.app_conductor",
+            "certificate_hash": "871fdc55f62639056f80fc2d49eaa8c9badf96b3"
+          }
+        },
+        {
+          "client_id": "353201080906-ejcadcqr1ip11r4v9c0oun99hppjvlgl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDzA3wwfbkKY3PYNLBnoic4IbFWiTb-HeY"
+          "current_key": "AIzaSyDIMtzPltY8L09mnBYcTy-fhheLT4ijDPE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "598050984426-p06mq2cjs443mo4humbbo3go6qft7mr7.apps.googleusercontent.com",
+              "client_id": "353201080906-ejcadcqr1ip11r4v9c0oun99hppjvlgl.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

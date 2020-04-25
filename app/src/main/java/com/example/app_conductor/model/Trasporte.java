@@ -2,59 +2,19 @@ package com.example.app_conductor.model;
 
 public class Trasporte {
 
-    private float calificacion;
-    private String contraseña;
-    private int edadConductor;
-    private boolean estado;
-    private int idLinea;
+
+
+
     private String idTrasporte;
     private String nombreConductor;
-    private String patente;
-    private String usuario;
-    private String fotoConductorUrl;
+    private String Patente;
+    private String lineaTrasporte;
+    private Boolean Estado;
+
+
 
     public Trasporte() {
 
-    }
-
-    public float getCalificacion() {
-        return calificacion;
-    }
-
-    public void setCalificacion(float calificacion) {
-        this.calificacion = calificacion;
-    }
-
-    public String getContraseña() {
-        return contraseña;
-    }
-
-    public void setContraseña(String contraseña) {
-        this.contraseña = contraseña;
-    }
-
-    public int getEdadConductor() {
-        return edadConductor;
-    }
-
-    public void setEdadConductor(int edadConductor) {
-        this.edadConductor = edadConductor;
-    }
-
-    public boolean isEstado() {
-        return estado;
-    }
-
-    public void setEstado(boolean estado) {
-        this.estado = estado;
-    }
-
-    public int getIdLinea() {
-        return idLinea;
-    }
-
-    public void setIdLinea(int idLinea) {
-        this.idLinea = idLinea;
     }
 
     public String getIdTrasporte() {
@@ -74,27 +34,26 @@ public class Trasporte {
     }
 
     public String getPatente() {
-        return patente;
+        return Patente;
     }
 
     public void setPatente(String patente) {
-        this.patente = patente;
+        Patente = patente;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public String getLineaTrasporte() {
+        return lineaTrasporte;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public void setLineaTrasporte(String lineaTrasporte) {
+        this.lineaTrasporte = lineaTrasporte;
     }
 
-    public String getFotoConductorUrl() {
-        return fotoConductorUrl;
+    public Boolean getEstado() {
+        return Estado;
     }
 
-    public void setFotoConductorUrl(String fotoConductorUrl) {
-        this.fotoConductorUrl = fotoConductorUrl;
+    public void setEstado(Boolean estado) {
+        Estado = estado;
     }
-
 }

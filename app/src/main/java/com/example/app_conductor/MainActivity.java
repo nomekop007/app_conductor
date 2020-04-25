@@ -32,31 +32,41 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.app_conductor.model.LineaTrasporte;
 import com.example.app_conductor.model.Trasporte;
 import com.example.app_conductor.model.coordenada;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
 
-
-    Button btnGPS ,btnGPS2;
-
+    Button btnGPS, btnGPS2;
     EditText txtUbicacion;
-    String id = "";
-    Trasporte perfil;
-    LineaTrasporte lineaTrasporte;
 
-    //hacer referencia a la base de datos de firebase
-    DatabaseReference mydatabasereference = FirebaseDatabase.getInstance().getReference();
+    //Extraer id del usuario logeado
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    String id = mAuth.getUid();
+
+    private Trasporte trasporte = new Trasporte();
+
+
+    private DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
+    private FirebaseFirestore myColeccion = FirebaseFirestore.getInstance();
+
 
     //escuchadores de gps
- private    LocationManager locationManager;
-  private   LocationListener locationListener;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
 
     //declarar elementos de drawer
     private DrawerLayout drawerLayout;
@@ -76,111 +86,119 @@ public class MainActivity extends AppCompatActivity {
         btnGPS2 = findViewById(R.id.boton2);
 
 
-        txtUbicacion =  findViewById(R.id.gps);
-        drawerLayout =  findViewById(R.id.drawer_layout);
-        toolbar =  findViewById(R.id.toolbar);
+        txtUbicacion = findViewById(R.id.gps);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        toolbar = findViewById(R.id.toolbar);
         navigationView = findViewById(R.id.navigation);
-        header = ((NavigationView)findViewById(R.id.navigation)).getHeaderView(0);
+        header = ((NavigationView) findViewById(R.id.navigation)).getHeaderView(0);
         btnGPS2.setVisibility(View.INVISIBLE);
         perfilTrasporte();
+
         confDrawer();
         permisosDeGPS();
 
 
     }
 
-    public void perfilTrasporte(){
+    public void perfilTrasporte() {
 
-        //extraer la id del login
-        Intent i = getIntent();
+        myColeccion.collection("Transporte")
+                .document(id)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot Transport = task.getResult();
 
-        id = i.getStringExtra("idTrasporte");
-        mydatabasereference.child("trasporte").child(id).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            trasporte.setIdTrasporte(Transport.getId() + "");
+                            trasporte.setNombreConductor(Transport.get("nombreConductor") + "");
+                            trasporte.setLineaTrasporte(Transport.get("lineaTrasporte") + "");
+                            trasporte.setPatente(Transport.get("Patente") + "");
 
-                perfil = dataSnapshot.getValue(Trasporte.class);
-
-                //mostrar los datos del perfil en el header del drawer
-
-                ((TextView) header.findViewById(R.id.text_nombre)).setText(""+perfil.getNombreConductor());
-                buscarLinea(perfil.getIdLinea()+""); //es foranea por eso se busca a parte
-                ((TextView) header.findViewById(R.id.text_edad)).setText("Edad : "+perfil.getEdadConductor());
-                ((TextView) header.findViewById(R.id.text_calificacion)).setText("Calificacion : "+perfil.getCalificacion());
-                ((TextView) header.findViewById(R.id.text_patente)).setText("Patente : "+perfil.getPatente());
-
-
-                Glide.with(getApplicationContext())
-                        .load(perfil.getFotoConductorUrl())
-                        .centerCrop()
-                        .circleCrop()
-                        .error(R.drawable.error)
-                        .placeholder(R.drawable.cargando)
-                        .thumbnail(0.5f)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into((ImageView) header.findViewById(R.id.imagenUser));
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+                            String estado = Transport.get("Estado") + "";
+                            if (estado.equals("true")) {
+                                ((TextView) header.findViewById(R.id.text_estado)).setText("Conductor Abilitado");
+                                trasporte.setEstado(true);
+                            } else {
+                                ((TextView) header.findViewById(R.id.text_estado)).setText("Conductor Desabilitado");
+                                trasporte.setEstado(false);
+                            }
 
 
+                            //mostrar los datos del perfil en el header del drawer
+                            ((TextView) header.findViewById(R.id.text_nombre)).setText(trasporte.getNombreConductor());
+                            ((TextView) header.findViewById(R.id.text_patente)).setText(trasporte.getPatente());
+                            BuscarLineaTrasporte();
+
+
+
+                        } else {
+                            Log.e("error : ", task.getException() + "");
+                        }
+                    }
+                });
     }
 
-    public void buscarLinea(String idLinea){
-        mydatabasereference.child("lineaTrasporte").child(idLinea).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    lineaTrasporte = dataSnapshot.getValue(LineaTrasporte.class);
-                ((TextView) header.findViewById(R.id.text_linea)).setText(""+lineaTrasporte.getNombreLinea());
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+    public void BuscarLineaTrasporte() {
+        myColeccion.collection("LineaTrasporte")
+                .document(trasporte.getLineaTrasporte())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                               if (task.isSuccessful()) {
+                                                   DocumentSnapshot lineaTrasporte = task.getResult();
+                                                 trasporte.setLineaTrasporte(lineaTrasporte.get("nombreLinea")+"");
+                                                   ((TextView) header.findViewById(R.id.text_linea)).setText(trasporte.getLineaTrasporte());
+                                               } else {
+                                                   Log.e("error : ", task.getException() + "");
+                                               }
+                                           }
+                                       }
+                );
     }
 
-    public void confDrawer(){
+
+    public void confDrawer() {
 
         //configuracion del comportamiento del drawer
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-               switch (menuItem.getItemId()){
-                   case R.id.cerrar:
-                       Toast.makeText(MainActivity.this, "sesion cerrada!", Toast.LENGTH_SHORT).show();
+                switch (menuItem.getItemId()) {
+                    case R.id.cerrar:
+                        Toast.makeText(MainActivity.this, "sesion cerrada!", Toast.LENGTH_SHORT).show();
 
-                       Intent intent = new Intent(MainActivity.this , login.class);
+                        Intent intent = new Intent(MainActivity.this, login.class);
 
-                       //apaga el lister de gps
-                       try {
-                           locationManager.removeUpdates(locationListener);
-                       }
-                       catch(Exception e) {
-                         Log.e("error : ","listener desactivado");
-                       }
+                        //apaga el lister de gps
+                        try {
+                            locationManager.removeUpdates(locationListener);
+                        } catch (Exception e) {
+                            Log.e("error : ", "listener desactivado");
+                        }
 
 
-                       //deja los valores en 0
-                       coordenada c = new coordenada();
-                       c.setIdTrasporte(id);
-                       c.setLatitud(0);
-                       c.setLongitud(0);
-                       mydatabasereference.child("coordenada").child(id).setValue(c);
-                       startActivity(intent);
-                       finish();
-                       break;
-               }
+                        //deja los valores en 0
+                        coordenada c = new coordenada();
+                        c.setIdTrasporte(id);
+                        c.setLatitud(0);
+                        c.setLongitud(0);
+                        myDatabase.child("Coordenada").child(id).setValue(c);
+                        startActivity(intent);
+                        finish();
+                        break;
+                }
                 return true;
             }
         });
 
         toolbar.setTitle("Ubicacion");
         setSupportActionBar(toolbar);
-        toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.openDrawer,R.string.closeDrawer);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.openDrawer, R.string.closeDrawer);
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
@@ -204,12 +222,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     public void ActivarGPS(View view) {
 
-         locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) MainActivity.this.getSystemService(Context.LOCATION_SERVICE);
 
-         locationListener = new LocationListener() {
+        locationListener = new LocationListener() {
 
             //cuando cambia la posicion del gps los actualiza
 
@@ -218,18 +235,19 @@ public class MainActivity extends AppCompatActivity {
                 //se extraen los datos
                 c.setIdTrasporte(id);
 
-                if (perfil.isEstado()){
                 c.setLatitud(location.getLatitude());
                 c.setLongitud(location.getLongitude());
-                    txtUbicacion.setText("" + location.getLatitude() + "," + location.getLongitude());
-                }else {
+                txtUbicacion.setText("" + location.getLatitude() + "," + location.getLongitude());
+
+                if (!trasporte.getEstado()) {
                     c.setLatitud(0);
                     c.setLongitud(0);
                     txtUbicacion.setText("ubicacion Bloqueada");
                 }
 
+
                 //se actualiza la coordenada
-                mydatabasereference.child("coordenada").child(id).setValue(c);
+                myDatabase.child("Coordenada").child(id).setValue(c);
 
                 btnGPS2.setVisibility(View.VISIBLE);
                 btnGPS.setVisibility(View.INVISIBLE);
@@ -265,20 +283,20 @@ public class MainActivity extends AppCompatActivity {
         //apaga el lister de gps
         try {
             locationManager.removeUpdates(locationListener);
-        }
-        catch(Exception e) {
-            Log.e("error : ","listener desactivado");
+        } catch (Exception e) {
+            Log.e("error : ", "listener desactivado");
         }
         //deja los valores en 0
         coordenada c = new coordenada();
         c.setIdTrasporte(id);
         c.setLatitud(0);
         c.setLongitud(0);
-        mydatabasereference.child("coordenada").child(id).setValue(c);
+        myDatabase.child("Coordenada").child(id).setValue(c);
         btnGPS2.setVisibility(View.INVISIBLE);
         btnGPS.setVisibility(View.VISIBLE);
         txtUbicacion.setText("");
     }
+
 
     @Override
     public void onBackPressed() {

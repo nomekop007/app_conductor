@@ -2,9 +2,10 @@ package com.example.app_conductor.model;
 
 public class coordenada {
 
-    private  String idTrasporte ;
-    private double longitud;
+    private  String idTrasporte;
     private  double latitud;
+    private double longitud;
+
 
 
     public coordenada() {

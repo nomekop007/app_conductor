@@ -1,34 +1,33 @@
 package com.example.app_conductor;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.app_conductor.model.LineaTrasporte;
-import com.example.app_conductor.model.Trasporte;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class login extends AppCompatActivity {
 
 
-    EditText t_usuario, t_pass;
+    private EditText t_usuario, t_pass;
+    private Button button_login;
 
-    DatabaseReference mydatabasereference = FirebaseDatabase.getInstance().getReference();
+    private FirebaseAuth mAuth;
 
-    private List<Trasporte> trasporteList = new ArrayList<>();
+    //declarar circulo de cargando
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,82 +35,71 @@ public class login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        mAuth = FirebaseAuth.getInstance();
 
         t_usuario = findViewById(R.id.txt_usuario);
         t_pass = findViewById(R.id.txt_pass);
+        button_login = findViewById(R.id.btn_ingresar);
 
-        crearLista();
+        //iniciar progressDialig
+        progressDialog = new ProgressDialog(this);
     }
 
     public void iniciar(View view) {
-            String usuario = t_usuario.getText().toString();
-            String pass = t_pass.getText().toString();
+        String email = t_usuario.getText().toString();
+        String pass = t_pass.getText().toString();
 
-            if (usuario.isEmpty()){
-                t_usuario.setError("Campo Vacio");
-                t_usuario.requestFocus();
+        //validar campos
+        if (email.isEmpty()) {
+            t_usuario.setError("Campo Vacio");
+            t_usuario.requestFocus();
 
-            }else if(pass.isEmpty()){
-                    t_pass.setError("Campo Vacio");
-                t_pass.requestFocus();
-            }else {
+        } else if (pass.isEmpty()) {
+            t_pass.setError("Campo Vacio");
+            t_pass.requestFocus();
+        } else {
+             LoginUser(email,pass);
 
-
-                    //recorre la lista de trasporte buscando si el trasporte esta registrado
-                for (Trasporte t: trasporteList) {
-                    if (usuario.equals(t.getUsuario()) && pass.equals(t.getContraseña())){
-
-                              Intent intent = new Intent(login.this , MainActivity.class);
-
-                              //enviar la id al mainActivity
-                              intent.putExtra("idTrasporte",t.getIdTrasporte()+"");
-                              startActivity(intent);
-                               finish();
-                              Toast.makeText(this, "sesion iniciada!", Toast.LENGTH_SHORT).show();
-
-                              limpiarCampos();
-                              return;
-                    }
-                }
-
-                Toast.makeText(this, "usuario o contraseña incorrecto!", Toast.LENGTH_SHORT).show();
-                limpiarCampos();
-            }
+        }
     }
 
-    public void limpiarCampos(){
-        t_pass.setText("");
 
-    }
 
-    public void crearLista(){
 
-        mydatabasereference.child("trasporte").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+    private void LoginUser(String email , String pass){
 
-                trasporteList.clear();
+        progressDialog.setMessage("verificando datos...");
+        progressDialog.show();
+    mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
 
-                //recorre la lista de los trasportes guardados en firebase
-                for (DataSnapshot obj : dataSnapshot.getChildren()) {
 
-                 //   Log.e("obj  :",obj.toString());
-                    // tranforma el json trasporte de firebase en el objeto trasporte
-                    Trasporte t = obj.getValue(Trasporte.class);
-                    trasporteList.add(t);
+            if (task.isSuccessful()) {
 
-                }
+                Toast.makeText(getApplicationContext(), "sesion iniciada!", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+                startActivity(new Intent(login.this, MainActivity.class));
+                finish();
 
+
+            } else {
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "email o contraseña incorrecto!", Toast.LENGTH_SHORT).show();
+                t_pass.setText("");
             }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+        }
+    });
+
+
+
+
+
+
+
+
+
     }
-
-
-
-
-
 
 }
