@@ -9,7 +9,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,35 +16,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.app_conductor.model.LineaTrasporte;
-import com.example.app_conductor.model.Trasporte;
-import com.example.app_conductor.model.coordenada;
+import com.example.app_conductor.model.Coordenada;
+import com.example.app_conductor.model.Transporte;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     String id = mAuth.getUid();
 
-    private Trasporte trasporte = new Trasporte();
+    private Transporte transporte = new Transporte();
 
 
     private DatabaseReference myDatabase = FirebaseDatabase.getInstance().getReference();
@@ -111,24 +98,24 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             DocumentSnapshot Transport = task.getResult();
 
-                            trasporte.setIdTrasporte(Transport.getId() + "");
-                            trasporte.setNombreConductor(Transport.get("nombreConductor") + "");
-                            trasporte.setLineaTrasporte(Transport.get("lineaTrasporte") + "");
-                            trasporte.setPatente(Transport.get("Patente") + "");
+                            transporte.setIdTransporte(Transport.getId() + "");
+                            transporte.setNombreConductor(Transport.get("nombreConductor") + "");
+                            transporte.setLineaTransporte(Transport.get("lineaTransporte") + "");
+                            transporte.setPatente(Transport.get("patente") + "");
 
-                            String estado = Transport.get("Estado") + "";
+                            String estado = Transport.get("estado") + "";
                             if (estado.equals("true")) {
                                 ((TextView) header.findViewById(R.id.text_estado)).setText("Conductor Abilitado");
-                                trasporte.setEstado(true);
+                                transporte.setEstado(true);
                             } else {
                                 ((TextView) header.findViewById(R.id.text_estado)).setText("Conductor Desabilitado");
-                                trasporte.setEstado(false);
+                                transporte.setEstado(false);
                             }
 
 
                             //mostrar los datos del perfil en el header del drawer
-                            ((TextView) header.findViewById(R.id.text_nombre)).setText(trasporte.getNombreConductor());
-                            ((TextView) header.findViewById(R.id.text_patente)).setText(trasporte.getPatente());
+                            ((TextView) header.findViewById(R.id.text_nombre)).setText(transporte.getNombreConductor());
+                            ((TextView) header.findViewById(R.id.text_patente)).setText(transporte.getPatente());
                             BuscarLineaTrasporte();
 
 
@@ -142,16 +129,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void BuscarLineaTrasporte() {
-        myColeccion.collection("LineaTrasporte")
-                .document(trasporte.getLineaTrasporte())
+        myColeccion.collection("LineaTransporte")
+                .document(transporte.getLineaTransporte())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                            @Override
                                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                if (task.isSuccessful()) {
-                                                   DocumentSnapshot lineaTrasporte = task.getResult();
-                                                 trasporte.setLineaTrasporte(lineaTrasporte.get("nombreLinea")+"");
-                                                   ((TextView) header.findViewById(R.id.text_linea)).setText(trasporte.getLineaTrasporte());
+                                                   DocumentSnapshot lineaTransporte = task.getResult();
+                                                 transporte.setLineaTransporte(lineaTransporte.get("nombreLinea")+"");
+                                                   ((TextView) header.findViewById(R.id.text_linea)).setText(transporte.getLineaTransporte());
                                                } else {
                                                    Log.e("error : ", task.getException() + "");
                                                }
@@ -183,8 +170,8 @@ public class MainActivity extends AppCompatActivity {
 
 
                         //deja los valores en 0
-                        coordenada c = new coordenada();
-                        c.setIdTrasporte(id);
+                        Coordenada c = new Coordenada();
+                        c.setIdTransporte(id);
                         c.setLatitud(0);
                         c.setLongitud(0);
                         myDatabase.child("Coordenada").child(id).setValue(c);
@@ -231,22 +218,22 @@ public class MainActivity extends AppCompatActivity {
             //cuando cambia la posicion del gps los actualiza
 
             public void onLocationChanged(Location location) {
-                coordenada c = new coordenada();
+                Coordenada c = new Coordenada();
                 //se extraen los datos
-                c.setIdTrasporte(id);
+                c.setIdTransporte(id);
 
                 c.setLatitud(location.getLatitude());
                 c.setLongitud(location.getLongitude());
                 txtUbicacion.setText("" + location.getLatitude() + "," + location.getLongitude());
 
-                if (!trasporte.getEstado()) {
+                if (!transporte.getEstado()) {
                     c.setLatitud(0);
                     c.setLongitud(0);
                     txtUbicacion.setText("ubicacion Bloqueada");
                 }
 
 
-                //se actualiza la coordenada
+                //se actualiza la Coordenada
                 myDatabase.child("Coordenada").child(id).setValue(c);
 
                 btnGPS2.setVisibility(View.VISIBLE);
@@ -287,11 +274,11 @@ public class MainActivity extends AppCompatActivity {
             Log.e("error : ", "listener desactivado");
         }
         //deja los valores en 0
-        coordenada c = new coordenada();
-        c.setIdTrasporte(id);
-        c.setLatitud(0);
-        c.setLongitud(0);
-        myDatabase.child("Coordenada").child(id).setValue(c);
+        Coordenada coordenada = new Coordenada();
+        coordenada.setIdTransporte(id);
+        coordenada.setLatitud(0);
+        coordenada.setLongitud(0);
+        myDatabase.child("Coordenada").child(id).setValue(coordenada);
         btnGPS2.setVisibility(View.INVISIBLE);
         btnGPS.setVisibility(View.VISIBLE);
         txtUbicacion.setText("");

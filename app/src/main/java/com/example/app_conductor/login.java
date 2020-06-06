@@ -10,12 +10,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class login extends AppCompatActivity {
 
@@ -36,7 +34,6 @@ public class login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
-
         t_usuario = findViewById(R.id.txt_usuario);
         t_pass = findViewById(R.id.txt_pass);
         button_login = findViewById(R.id.btn_ingresar);
@@ -58,46 +55,30 @@ public class login extends AppCompatActivity {
             t_pass.setError("Campo Vacio");
             t_pass.requestFocus();
         } else {
-             LoginUser(email,pass);
-
+            LoginUser(email, pass);
         }
     }
 
 
-
-
-    private void LoginUser(String email , String pass){
-
+    private void LoginUser(String email, String pass) {
         progressDialog.setMessage("verificando datos...");
         progressDialog.show();
-    mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-        @Override
-        public void onComplete(@NonNull Task<AuthResult> task) {
+        mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "sesion iniciada!", Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
+                    startActivity(new Intent(login.this, MainActivity.class));
+                    finish();
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(getApplicationContext(), "email o contraseña incorrecto!", Toast.LENGTH_SHORT).show();
+                    t_pass.setText("");
+                }
 
-
-            if (task.isSuccessful()) {
-
-                Toast.makeText(getApplicationContext(), "sesion iniciada!", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
-                startActivity(new Intent(login.this, MainActivity.class));
-                finish();
-
-
-            } else {
-                progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "email o contraseña incorrecto!", Toast.LENGTH_SHORT).show();
-                t_pass.setText("");
             }
-
-        }
-    });
-
-
-
-
-
-
-
+        });
 
 
     }
