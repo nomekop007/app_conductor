@@ -6,14 +6,18 @@ import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class login extends AppCompatActivity {
 
@@ -22,6 +26,7 @@ public class login extends AppCompatActivity {
     private Button button_login;
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore myColeccion = FirebaseFirestore.getInstance();
 
     //declarar circulo de cargando
     private ProgressDialog progressDialog;
@@ -67,10 +72,8 @@ public class login extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(getApplicationContext(), "sesion iniciada!", Toast.LENGTH_SHORT).show();
-                    progressDialog.dismiss();
-                    startActivity(new Intent(login.this, MainActivity.class));
-                    finish();
+                    mAuth = FirebaseAuth.getInstance();
+                    ValidarTransporte(mAuth.getUid());
                 } else {
                     progressDialog.dismiss();
                     Toast.makeText(getApplicationContext(), "email o contraseña incorrecto!", Toast.LENGTH_SHORT).show();
@@ -81,6 +84,38 @@ public class login extends AppCompatActivity {
         });
 
 
+    }
+
+    private void ValidarTransporte(String idTransporte) {
+
+        myColeccion.collection("Transporte")
+                .document(idTransporte)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            Log.e("error : ", document+"");
+                            if (document.exists()) {
+                                Toast.makeText(getApplicationContext(), "sesion iniciada!", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                startActivity(new Intent(login.this, MainActivity.class));
+                                finish();
+                            } else {
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplicationContext(), "este usuario no es un conductor inscrito!", Toast.LENGTH_SHORT).show();
+                                t_pass.setText("");
+                            }
+
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), "este usuario no es un conductor inscrito!", Toast.LENGTH_SHORT).show();
+                            t_pass.setText("");
+                        }
+                    }
+                });
     }
 
 }
